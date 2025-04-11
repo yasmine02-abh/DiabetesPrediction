@@ -1,0 +1,82 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabetesPredictPro</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'diabetesPrediction/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <!-- Navigation -->
+    <nav class="w-full px-4 py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-heartbeat text-blue-500 text-2xl"></i>
+                <span class="text-xl font-bold text-gray-800">DiabetesPredictPro</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="flex-1 container mx-auto px-4 py-12 flex flex-col items-center text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6" data-aos="fade-up" data-aos-duration="1000">
+            Predict and Prevent Diabetes <br />
+            <span class="text-blue-500">With AI-Powered Precision</span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 max-w-2xl" data-aos="fade-up" data-aos-duration="1000">
+            Take control of your health with our advanced diabetes prediction tool. Early detection leads to better prevention and management.
+        </p>
+        <a href="{% url 'login' %}" class="bg-blue-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-600 transform hover:scale-105 transition-all duration-200 ease-in-out shadow-lg hover:shadow-xl mb-12" data-aos="fade-up" data-aos-duration="1000">
+            Get Started Now
+        </a>
+
+        <!-- Features Grid -->
+        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="bg-white p-6 rounded-xl shadow-lg fade-in">
+                <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <i class="fas fa-brain text-blue-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">AI-Powered Analysis</h3>
+                <p class="text-gray-600">Advanced machine learning algorithms for accurate predictions</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg fade-in">
+                <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <i class="fas fa-running text-blue-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Real-time Monitoring</h3>
+                <p class="text-gray-600">Track your health metrics and receive instant insights</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg fade-in">
+                <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <i class="fas fa-shield-alt text-blue-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Secure & Private</h3>
+                <p class="text-gray-600">Your health data is encrypted and protected</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full bg-gray-50 py-8">
+        <div class="container mx-auto px-4 text-center text-gray-600">
+            <p>© 2024 DiabetesPredictPro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Diabetes Prediction{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Enter Patient Details</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Gender</label>
+            <select name="gender" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Age</label>
+            <input type="number" name="age" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Hypertension</label>
+            <select name="hypertension" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Heart Disease</label>
+            <select name="heart_disease" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Smoking History</label>
+            <select name="smoking_history" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
+                <option value="never">Never</option>
+                <option value="ever">Ever</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">BMI</label>
+            <input type="number" name="bmi" step="0.1" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">HbA1c Level</label>
+            <input type="number" name="HbA1c_level" step="0.1" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700">Blood Glucose Level</label>
+            <input type="number" name="blood_glucose_level" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+        </div>
+
+        <div class="text-end">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Predict</button>
+        </div>
+    </form>
+
+    {% if result %}
+        <div class="mt-6 p-4 rounded {% if result == 'You are free from diabetes' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+            <strong>{{ result }}</strong>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
