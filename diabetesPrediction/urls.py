@@ -25,5 +25,8 @@ urlpatterns = [
     path('register/', views.register, name="register"),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('predict/', views.predict_diabetes, name='predict_diabetes'),
+    path('profile/', views.profile, name='profile'),
+    path('charts/', views.charts, name='charts'),
+
 
 ]

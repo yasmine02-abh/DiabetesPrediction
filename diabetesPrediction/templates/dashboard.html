@@ -2,6 +2,24 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1 class="text-3xl font-bold text-gray-700">Welcome to the Dashboard</h1>
-<p class="mt-4 text-gray-600">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsam, molestias!</p>
+{% load static %}
+
+<div class="container mt-3 pt-5">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h2>Track your health and manage diabetes with ease</h2>
+            <p>Use our advanced predictive tools to stay on top of your health.</p>
+            
+            <div class="mt-4 d-flex justify-content-center">
+                <div style="width: 30%;">
+                    <img src="{% static 'images/undraw_medicine_hqqg.svg' %}" alt="Health Medicine" class="img-fluid custom-image" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}
+

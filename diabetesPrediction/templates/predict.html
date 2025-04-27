@@ -3,67 +3,76 @@
 {% block title %}Diabetes Prediction{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-4xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">Enter Patient Details</h2>
 
-    <form method="post">
+<div class="w-full max-w-4xl mx-auto mt-20 p-8 bg-white shadow-lg rounded-lg">
+    <div class="row bg-blue-50 p-6 rounded-lg mb-12">
+        <div class="col-12 text-center">
+            <h2 class="text-3xl text-blue-500 font-bold">Predict your risk of diabetes</h2>
+        </div>
+    </div>
+    
+    
+    <form method="post" style="margin-top: inherit;">
         {% csrf_token %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-gray-700 mb-2 font-semibold">Gender</label>
+                <select name="gender" class="form-select w-full max-w-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700">Gender</label>
-            <select name="gender" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>
-        </div>
+            <div>
+                <label class="block text-gray-700 mb-2 font-semibold">Age</label>
+                <input type="number" name="age" min="0" class="form-control w-full max-w-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700">Age</label>
-            <input type="number" name="age" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
-        </div>
+            <div>
+                <label class="block text-gray-700 mb-2 font-semibold">Hypertension</label>
+                <select name="hypertension" class="form-select w-full max-w-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700">Hypertension</label>
-            <select name="hypertension" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
+            <div>
+                <label class="block text-gray-700 mb-2 font-semibold">Heart Disease</label>
+                <select name="heart_disease" class="form-select w-full max-w-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700">Heart Disease</label>
-            <select name="heart_disease" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
+            <div>
+                <label class="block text-gray-700 mb-2 font-semibold">Smoking History</label>
+                <select name="smoking_history" class="form-select w-full max-w-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="never">Never</option>
+                    <option value="ever">Ever</option>
+                </select>
+            </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700">Smoking History</label>
-            <select name="smoking_history" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
-                <option value="never">Never</option>
-                <option value="ever">Ever</option>
-            </select>
-        </div>
+            <div>
+                <label class="block text-gray-700 mb-2 font-semibold">BMI</label>
+                <input type="number" name="bmi" step="0.1" min="10" max="95.7" class="form-control w-full max-w-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700">BMI</label>
-            <input type="number" name="bmi" step="0.1" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
-        </div>
+            <div>
+                <label class="block text-gray-700 mb-2 font-semibold">HbA1c Level</label>
+                <input type="number" name="HbA1c_level" step="0.1" min="3.5" max="9" class="form-control w-full max-w-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700">HbA1c Level</label>
-            <input type="number" name="HbA1c_level" step="0.1" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+            <div>
+                <label class="block text-gray-700 mb-2 font-semibold">Blood Glucose Level</label>
+                <input type="number" name="blood_glucose_level" min="80" max="300" class="form-control w-full max-w-sm border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
         </div>
-
-        <div class="mb-4">
-            <label class="block text-gray-700">Blood Glucose Level</label>
-            <input type="number" name="blood_glucose_level" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
-        </div>
-
-        <div class="text-end">
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Predict</button>
-        </div>
+        <div class="text-center mt-10">
+            <button type="submit" class="w-96 px-6 py-2 ml-4 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transition">
+                Predict
+            </button>
+        </div>        
+        
     </form>
 
     {% if result %}

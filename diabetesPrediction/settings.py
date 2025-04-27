@@ -120,7 +120,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # Make sure this folder exists!
+    #BASE_DIR / "static",  # Make sure this folder exists!
 ]
 #STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 

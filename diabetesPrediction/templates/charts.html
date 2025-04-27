@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Diabetes Charts{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- Recent Data Section -->
+    <section id="recent-data" class="features-cards section" style="padding-top: 30px; padding-bottom: 30px;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2>Your Recent Values</h2>
+                <p style="font-size: 1.2rem; color: #6c757d;">Here are the most recent values for your health data. Keep track of these metrics to monitor your progress.</p>
+            </div>
+            <div class="row gy-5 justify-content-center">
+                <!-- Card for BMI -->
+                <div class="col-xl-3 col-md-4 col-12 d-flex justify-content-center mb-5" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="card" style="border-radius: 10px; background-color: #c8edf3; width: 100%; max-width: 320px;">
+                        <div class="card-body">
+                            <i class="bi bi-activity" style="font-size: 2rem; color: #17a2b8;"></i>
+                            <h4 class="card-title mt-3" style="font-weight: normal;">BMI</h4>
+                            <p class="card-text" style="font-weight: normal;">{{ recent_bmi }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for HbA1c Level -->
+                <div class="col-xl-3 col-md-4 col-12 d-flex justify-content-center mb-5" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="card" style="border-radius: 10px; background-color: #d4edda; width: 100%; max-width: 320px;">
+                        <div class="card-body">
+                            <i class="bi bi-heart" style="font-size: 2rem; color: #28a745;"></i>
+                            <h4 class="card-title mt-3" style="font-weight: normal;">HbA1c Level</h4>
+                            <p class="card-text" style="font-weight: normal;">{{ recent_hba1c }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Blood Glucose Level -->
+                <div class="col-xl-3 col-md-4 col-12 d-flex justify-content-center mb-5" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="card" style="border-radius: 10px; background-color: #f8d7da; width: 100%; max-width: 320px;">
+                        <div class="card-body">
+                            <i class="bi bi-droplet" style="font-size: 2rem; color: #dc3545;"></i>
+                            <h4 class="card-title mt-3" style="font-weight: normal;">Blood Glucose Level</h4>
+                            <p class="card-text" style="font-weight: normal;">{{ recent_glucose }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <h2 class="text-center mb-5">Your Health Data Evolution</h2>
+
+    <!-- BMI Chart -->
+    <div class="card mb-5 p-4" style="width: 80%; max-width: 700px; margin: 0 auto;">
+        <h4 class="text-center mb-3">BMI Over Time</h4>
+        <canvas id="bmiChart"></canvas>
+    </div>
+
+    <!-- HbA1c Chart -->
+    <div class="card mb-5 p-4" style="width: 80%; max-width: 700px; margin: 0 auto;">
+        <h4 class="text-center mb-3">HbA1c Over Time</h4>
+        <canvas id="hba1cChart"></canvas>
+    </div>
+
+    <!-- Glucose Chart -->
+    <div class="card mb-5 p-4" style="width: 80%; max-width: 700px; margin: 0 auto;">
+        <h4 class="text-center mb-3">Glucose Over Time</h4>
+        <canvas id="glucoseChart"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Safely inject JSON data -->
+{{ dates|json_script:"dates-data" }}
+{{ bmi_values|json_script:"bmi-data" }}
+{{ hba1c_values|json_script:"hba1c-data" }}
+{{ glucose_values|json_script:"glucose-data" }}
+
+<script>
+    // Read the JSON data safely
+    const labels = JSON.parse(document.getElementById('dates-data').textContent);
+    const bmiData = JSON.parse(document.getElementById('bmi-data').textContent);
+    const hba1cData = JSON.parse(document.getElementById('hba1c-data').textContent);
+    const glucoseData = JSON.parse(document.getElementById('glucose-data').textContent);
+
+    // BMI Chart
+    new Chart(document.getElementById('bmiChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'BMI',
+                data: bmiData,
+                backgroundColor: 'rgba(23, 162, 184, 0.2)',
+                borderColor: '#17a2b8',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // HbA1c Chart
+    new Chart(document.getElementById('hba1cChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'HbA1c Level',
+                data: hba1cData,
+                backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                borderColor: '#28a745',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // Glucose Chart
+    new Chart(document.getElementById('glucoseChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Blood Glucose',
+                data: glucoseData,
+                backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                borderColor: '#dc3545',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: { responsive: true }
+    });
+</script>
+{% endblock %}
