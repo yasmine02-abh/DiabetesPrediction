@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/heart-pulse-blue500.svg' %}">
+    <title>Évolution des calories</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            width: 60%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>📊 Évolution des calories consommées</h2>
+
+<div class="chart-card">
+    <div class="chart-container">
+        <canvas id="calorieChart"></canvas>
+    </div>
+</div>
+
+<!-- Passage des données depuis Django -->
+{{ dates|json_script:"dates-data" }}
+{{ calories|json_script:"calories-data" }}
+
+<script>
+    const dates = JSON.parse(document.getElementById('dates-data').textContent);
+    const calories = JSON.parse(document.getElementById('calories-data').textContent);
+
+    const ctx = document.getElementById('calorieChart').getContext('2d');
+    const calorieChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Calories consommées par jour',
+                data: calories,
+                backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                borderColor: 'rgba(41, 128, 185, 1)',
+                borderWidth: 1,
+                barThickness: 90
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#2c3e50',
+                        font: { size: 14 }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Calories',
+                        color: '#2c3e50',
+                        font: { size: 14 }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#2c3e50',
+                        font: { size: 14 }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

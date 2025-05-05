@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register - DiabetesPredictPro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
@@ -18,6 +19,14 @@
         <span>DiabetesPredictPro</span>
       </div>
     </header>
+
+    <style>
+      .custom-select-big {
+        height: 50px;      
+        padding: 10px;       
+        font-size: 1rem;      
+      }
+    </style>
 
     <!-- Main Content -->
     <main>
@@ -43,12 +52,36 @@
             {% csrf_token %}
             <div class="form-group">
               <label for="nom">Name</label>
-              <input type="text" name="nom" id="nom" required>
+              <input type="text" name="nom" id="nom" required placeholder="Enter your name">
             </div>
 
             <div class="form-group">
               <label for="email">Email Address</label>
               <input type="email" name="email" id="email" placeholder="you@example.com" required>
+            </div>
+
+            <div class="form-group">
+              <label for="age">Age</label>
+              <input type="age" name="age" id="age" placeholder="Enter your age" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="gender" class="form-label">Gender</label>
+              <select class="form-select custom-select-big" id="gender" name="gender" required>
+                <option value=""></option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label for="activity_level" class="form-label">Activity Level</label>
+              <select class="form-select custom-select-big" id="activity_level" name="activity_level" required>
+                <option value=""></option>
+                <option value="sedentary">Sedentary (little to no physical activity)</option>
+                <option value="moderate">Moderately Active (moderate exercise or physical activity)</option>
+                <option value="active">Active (intense exercise or physical activity)</option>
+              </select>
             </div>
 
             <div class="form-group">

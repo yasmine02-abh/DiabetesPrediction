@@ -16,6 +16,12 @@ from django.template.defaultfilters import json_script
 import json
 from django.http import JsonResponse
 
+from .models import Aliment, Consommation
+from .utils import chercher_aliment
+
+from django.db.models import F, Sum
+from django.db.models.functions import TruncDate
+
 def home(request):
     return render(request, "home.html")
 
@@ -41,11 +47,14 @@ def register(request):
         nom = request.POST.get('nom')
         email = request.POST.get('email')
         mot_de_passe = request.POST.get('password')
+        gender = request.POST.get('gender')
+        activity_level = request.POST.get('activity_level')
+        age = request.POST.get('age')
 
         if Utilisateur.objects.filter(email=email).exists():
             messages.error(request, "An account with this email already exists.")
         else:
-            Utilisateur.objects.create(nom=nom, email=email, mot_de_passe=mot_de_passe)
+            Utilisateur.objects.create(nom=nom, email=email, mot_de_passe=mot_de_passe, gender=gender, activity_level=activity_level, age=age)
             messages.success(request, "Account created successfully. You can now log in.")
             return redirect('login')  
 
@@ -115,10 +124,18 @@ def profile(request):
         updated_email = request.POST.get('email')
         updated_mot_de_passe = request.POST.get('mot_de_passe')
         confirm_mot_de_passe = request.POST.get('confirm_password')
+        updated_age = request.POST.get('age')
+        updated_gender = request.POST.get('gender')
+        updated_activity_level = request.POST.get('activity_level')
 
         # Update the user's name and email
         utilisateur.nom = updated_nom
         utilisateur.email = updated_email
+
+        if updated_age:
+            utilisateur.age = int(updated_age)
+        utilisateur.gender = updated_gender
+        utilisateur.activity_level = updated_activity_level
 
         # Check if password change is requested
         if updated_mot_de_passe:
@@ -152,11 +169,29 @@ scaler = joblib.load(SCALER_PATH)
 @login_required
 def predict_diabetes(request):
     result = None
+    utilisateur_id = request.session.get('utilisateur_id')  # Get the logged-in user ID from the session
+    
+    if utilisateur_id:
+        try:
+            # Retrieve the utilisateur (user) from the database
+            utilisateur = Utilisateur.objects.get(id=utilisateur_id)
+            gender = utilisateur.gender  # Assuming 'gender' is a field in the 'Utilisateur' model
+            age = utilisateur.age  # Assuming 'age' is a field in the 'Utilisateur' model
+
+            if gender == 'M':
+                gender = 'Male'
+            elif gender == 'F':
+                gender = 'Female'
+            
+        except Utilisateur.DoesNotExist:
+            result = "Error: User not found."
+            return render(request, "predict.html", {"result": result})
+    else:
+        result = "Error: No user is logged in."
+        return render(request, "predict.html", {"result": result})
     if request.method == "POST":
         try:
-            # Get data from form
-            gender = request.POST.get("gender")
-            age = float(request.POST.get("age"))
+            
             hypertension = int(request.POST.get("hypertension"))
             heart_disease = int(request.POST.get("heart_disease"))
             smoking_history = request.POST.get("smoking_history")
@@ -209,4 +244,197 @@ def predict_diabetes(request):
         except Exception as e:
             result = f"Error: {str(e)}"
 
-    return render(request, "predict.html", {"result": result})
+    return render(request, "predict.html", {"result": result, "gender": gender, "age": age})
+
+
+
+
+#####
+def rechercher_aliment(request):
+    resultat = None
+    message = None
+
+    if request.method == 'POST':
+        nom = request.POST.get('nom')
+        if 'ajouter' in request.POST:
+            # Check if the aliment already exists in the database (case-insensitive)
+            if Aliment.objects.filter(nom__iexact=nom).exists():
+                message = f"L'aliment '{nom}' existe déjà dans la base de données."
+            else:
+                # Ajouter à la base de données avec une valeur numérique propre (en kcal)
+                Aliment.objects.create(
+                    nom=nom,
+                    calories=float(request.POST['calories'])  # en kcal
+                )
+                message = f"L'aliment '{nom}' a été ajouté avec succès."
+        else:
+            data = chercher_aliment(nom)
+            if data:
+                data['nom'] = nom
+                # NE PAS multiplier par 1000, garder en kcal
+                # arrondir à 2 chiffres après la virgule pour l'affichage
+                data['calories'] = round(data['calories'], 2)
+                resultat = data
+            else:
+                message = "Aucun aliment trouvé. Essayez un autre nom."
+
+    return render(request, 'rechercher_aliment.html', {
+        'resultat': resultat,
+        'message': message
+    })
+
+
+
+def ajouter_consommation(request):
+    message = None
+    
+    if request.method == 'POST':
+        aliment_id = request.POST.get('aliment_id')
+        quantite = float(request.POST.get('quantite'))
+        
+        # Vérifier si l'aliment existe dans la base de données
+        aliment = Aliment.objects.get(id=aliment_id)
+        
+        # Récupérer l'utilisateur connecté depuis la session
+        utilisateur_id = request.session.get('utilisateur_id')
+        
+        if utilisateur_id:
+            # Utiliser le modèle Utilisateur pour récupérer l'utilisateur
+            utilisateur = Utilisateur.objects.get(id=utilisateur_id)
+        else:
+            # Si l'utilisateur n'est pas trouvé dans la session, vous pouvez gérer l'erreur
+            message = "Utilisateur non authentifié. Veuillez vous connecter."
+            return redirect('login')  # Rediriger vers la page de connexion si nécessaire
+
+        # Ajouter la consommation à la base de données
+        Consommation.objects.create(
+            utilisateur=utilisateur,
+            aliment=aliment,
+            quantite=quantite
+        )
+        
+        message = f"{quantite}g de {aliment.nom} ont été ajoutés à votre consommation."
+
+    # Afficher tous les aliments disponibles dans la base
+    aliments = Aliment.objects.all()
+    return render(request, 'ajouter_consommation.html', {'aliments': aliments, 'message': message})
+
+
+
+
+def suivi_calories(request):
+    utilisateur_id = request.session.get('utilisateur_id')
+    if not utilisateur_id:
+        return redirect('login')
+
+    utilisateur = Utilisateur.objects.get(id=utilisateur_id)
+
+    consommations = Consommation.objects.filter(utilisateur=utilisateur).order_by('-date')
+
+    daily_calories = None
+    if consommations.exists():
+        latest_date = consommations.first().date  # Pas besoin de .date() si déjà DateField
+
+        consommations_du_jour = consommations.filter(date=latest_date)  # ✅ Ici
+
+        total_calories = sum(
+            (c.aliment.calories * c.quantite) / 100 for c in consommations_du_jour
+        )
+
+        gender = utilisateur.gender
+        age = utilisateur.age
+        activity = utilisateur.activity_level
+
+        if gender == "M":
+            if 19 <= age <= 30:
+                if activity == "sedentary":
+                    daily_calories = 2400
+                elif activity == "moderate":
+                    daily_calories = 2600
+                elif activity == "active":
+                    daily_calories = 3000
+            elif 31 <= age <= 50:
+                if activity == "sedentary":
+                    daily_calories = 2200
+                elif activity == "moderate":
+                    daily_calories = 2400
+                elif activity == "active":
+                    daily_calories = 2800
+            else:
+                if activity == "sedentary":
+                    daily_calories = 2000
+                elif activity == "moderate":
+                    daily_calories = 2200
+                elif activity == "active":
+                    daily_calories = 2400
+
+        elif gender == "F":
+            if 19 <= age <= 30:
+                if activity == "sedentary":
+                    daily_calories = 1800
+                elif activity == "moderate":
+                    daily_calories = 2000
+                elif activity == "active":
+                    daily_calories = 2400
+            elif 31 <= age <= 50:
+                if activity == "sedentary":
+                    daily_calories = 1800
+                elif activity == "moderate":
+                    daily_calories = 2000
+                elif activity == "active":
+                    daily_calories = 2200
+            else:
+                if activity == "sedentary":
+                    daily_calories = 1600
+                elif activity == "moderate":
+                    daily_calories = 1800
+                elif activity == "active":
+                    daily_calories = 2000
+
+
+        return render(request, 'suivi_calories.html', {
+            'consommations': consommations_du_jour,
+            'total_calories': total_calories,
+            'date_jour': latest_date,
+            'daily_calories': daily_calories,
+        })
+
+    return render(request, 'suivi_calories.html', {
+        'consommations': [],
+        'total_calories': 0,
+        'daily_calories': None
+    })
+
+
+from collections import defaultdict
+from decimal import Decimal
+
+def graphe_calories(request):
+    utilisateur_id = request.session.get('utilisateur_id')
+    if not utilisateur_id:
+        return redirect('login')
+
+    utilisateur = Utilisateur.objects.get(id=utilisateur_id)
+
+    consommations = (
+        Consommation.objects
+        .filter(utilisateur=utilisateur)
+        .select_related('aliment')
+        .order_by('date')
+    )
+
+    calories_par_jour = defaultdict(float)
+    for conso in consommations:
+        date_jour = conso.date
+        if conso.aliment and conso.aliment.calories and conso.quantite:
+            calories = (Decimal(conso.aliment.calories) * Decimal(conso.quantite)) / Decimal(100)
+            calories_par_jour[date_jour] += float(calories)
+
+    dates = [date.strftime('%Y-%m-%d') for date in sorted(calories_par_jour.keys())]
+    calories = [calories_par_jour[date] for date in sorted(calories_par_jour.keys())]
+
+    context = {
+        'dates': dates,
+        'calories': calories
+    }
+    return render(request, 'graphe_calories.html', context)

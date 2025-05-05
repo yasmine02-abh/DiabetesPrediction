@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/heart-pulse-blue500.svg' %}">
+    <title>Ajouter une consommation alimentaire</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+    <!-- AOS CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, #0d6efd, #0a58ca); 
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        a.link-primary {
+            font-weight: 500;
+            text-decoration: underline;
+        }
+
+        .btn-rounded-center {
+            display: block;
+            margin: 0 auto;
+            border-radius: 50px;
+            padding: 10px 30px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/dashboard">🍎 Gestion Nutrition</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto gap-2">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'suivi_calories' %}">Suivi des calories</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'graphe_calories' %}">Graphique des calories</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container my-5" data-aos="fade-up" data-aos-duration="1000">
+    <div class="card shadow-sm">
+        <div class="card-header text-white">
+            <h3>Ajouter une consommation alimentaire</h3>
+        </div>
+        <div class="card-body">
+
+            {% if message %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+
+            <!-- Formulaire -->
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="aliment" class="form-label">Choisir un aliment :</label>
+                    <select name="aliment_id" class="form-select" required>
+                        {% for aliment in aliments %}
+                            <option value="{{ aliment.id }}">
+                                {{ aliment.nom }} - {{ aliment.calories }} cal/100g
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text mt-2">
+                        Aliment non trouvé ?
+                        <a href="{% url 'rechercher_aliment' %}" class="link-primary">Ajoutez un nouvel aliment</a>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="quantite" class="form-label">Quantité (en grammes) :</label>
+                    <input type="number" name="quantite" class="form-control" step="0.1" min="1" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-rounded-center">Ajouter à la consommation</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+<!-- AOS JS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+
+</body>
+</html>

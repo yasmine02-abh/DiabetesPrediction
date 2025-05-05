@@ -1,25 +1,35 @@
 {% extends 'base.html' %}
+
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
 {% load static %}
 
+<!-- Include AOS CSS -->
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
 <div class="container mt-3 pt-5">
     <div class="row">
         <div class="col-12 text-center">
-            <h2>Track your health and manage diabetes with ease</h2>
-            <p>Use our advanced predictive tools to stay on top of your health.</p>
+            <h2 data-aos="fade-up" data-aos-duration="1000">Track your health and manage diabetes with ease</h2>
+            <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">Use our advanced predictive tools to stay on top of your health.</p>
             
             <div class="mt-4 d-flex justify-content-center">
-                <div style="width: 30%;">
+                <div style="width: 30%;" data-aos="zoom-in" data-aos-duration="1500">
                     <img src="{% static 'images/undraw_medicine_hqqg_blue500.svg' %}" alt="Health Medicine" class="img-fluid custom-image" />
                 </div>
             </div>
 
         </div>
     </div>
-
 </div>
 
-{% endblock %}
+<!-- Include AOS JS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
+<script>
+    // Initialize AOS
+    AOS.init();
+</script>
+
+{% endblock %}

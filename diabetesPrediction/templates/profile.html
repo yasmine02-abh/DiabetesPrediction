@@ -3,9 +3,13 @@
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 pt-16 pb-16">
-    <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg relative">
 
+<!-- AOS CSS -->
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+<div class="container mx-auto px-4 pt-16 pb-16">
+    <!-- Main container with AOS -->
+    <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg relative" data-aos="fade-up" data-aos-duration="1000">
 
         {% if messages %}
         <div class="space-y-4">
@@ -20,7 +24,7 @@
                 </div>
             {% endfor %}
         </div>
-    {% endif %}
+        {% endif %}
 
         <!-- Profile Icon -->
         <div class="w-20 h-20 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center mx-auto -mt-16 shadow-md">
@@ -33,50 +37,91 @@
 
         <form method="POST" id="profileForm" class="space-y-6">
             {% csrf_token %}
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="name">Full Name</label>
-                <input type="text" id="name" name="nom" value="{{ utilisateur.nom }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" disabled>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="name">Full Name</label>
+                    <input type="text" id="name" name="nom" value="{{ utilisateur.nom }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" disabled>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ utilisateur.email }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" disabled>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="age">Age</label>
+                    <input type="number" id="age" name="age" value="{{ utilisateur.age }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" disabled>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="gender">Gender</label>
+                    <select id="gender" name="gender" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" disabled>
+                        <option value="M" {% if utilisateur.gender == 'M' %}selected{% endif %}>Male</option>
+                        <option value="F" {% if utilisateur.gender == 'F' %}selected{% endif %}>Female</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="activity_level">Activity Level</label>
+                    <select id="activity_level" name="activity_level" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" disabled>
+                        <option value="sedentary" {% if utilisateur.activity_level == 'sedentary' %}selected{% endif %}>Sedentary</option>
+                        <option value="moderate" {% if utilisateur.activity_level == 'moderate' %}selected{% endif %}>Moderate</option>
+                        <option value="active" {% if utilisateur.activity_level == 'active' %}selected{% endif %}>Active</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Password</label>
+                    <input type="password" id="password" name="mot_de_passe" value="{{ utilisateur.mot_de_passe }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" disabled>
+                </div>
+
+                <div id="confirmPasswordContainer" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" value="{{ utilisateur.mot_de_passe }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                </div>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="email">Email</label>
-                <input type="email" id="email" name="email" value="{{ utilisateur.email }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" disabled>
-            </div>
+            <div class="flex justify-between mt-8">
+                <!-- Sign Out Button -->
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <button type="submit" class="px-6 py-2 text-red-500 border border-red-500 rounded-full font-semibold hover:bg-red-50 transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sign Out
+                    </button>
+                </form>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Password</label>
-                <input type="password" id="password" name="mot_de_passe" value="{{ utilisateur.mot_de_passe }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" disabled>
-            </div>
-
-            <!-- Confirm Password (only shown when editing password) -->
-            <div id="confirmPasswordContainer" class="hidden">
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm_password">Confirm Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" value="{{ utilisateur.mot_de_passe }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-            </div>
-
-            <div class="flex justify-end">
-                <button type="button" id="editBtn" class="px-6 py-2 text-blue-500 border border-blue-500 rounded-full font-semibold hover:bg-blue-50 transition">
-                    <i class="fas fa-pen mr-2"></i>Edit
-                </button>
-                <button type="submit" id="saveBtn" class="hidden px-6 py-2 ml-4 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transition">
-                    <i class="fas fa-save mr-2"></i>Save
-                </button>
+                <!-- Edit and Save Buttons -->
+                <div class="flex">
+                    <button type="button" id="editBtn" class="px-6 py-2 text-blue-500 border border-blue-500 rounded-full font-semibold hover:bg-blue-50 transition">
+                        <i class="fas fa-pen mr-2"></i>Edit
+                    </button>
+                    <button type="submit" id="saveBtn" class="hidden px-6 py-2 ml-4 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transition">
+                        <i class="fas fa-save mr-2"></i>Save
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
+<!-- AOS JS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+
 <script>
     const editBtn = document.getElementById('editBtn');
     const saveBtn = document.getElementById('saveBtn');
-    const inputs = document.querySelectorAll('#profileForm input');
+    const inputs = document.querySelectorAll('#profileForm input, #profileForm select');
     const confirmPasswordContainer = document.getElementById('confirmPasswordContainer');
 
     editBtn.addEventListener('click', () => {
-        inputs.forEach(input => input.disabled = false); // Enable all input fields
-        confirmPasswordContainer.classList.remove('hidden'); // Show confirm password input
-        editBtn.classList.add('hidden'); // Hide the edit button
-        saveBtn.classList.remove('hidden'); // Show the save button
+        inputs.forEach(input => input.disabled = false);
+        confirmPasswordContainer.classList.remove('hidden');
+        editBtn.classList.add('hidden');
+        saveBtn.classList.remove('hidden');
     });
 </script>
+
 {% endblock %}

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'diabetesPrediction',
 ]
 
@@ -120,7 +121,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    #BASE_DIR / "static",  # Make sure this folder exists!
+    os.path.join(BASE_DIR, 'diabetesPrediction', 'static'),  # Make sure this folder exists!
 ]
 #STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 

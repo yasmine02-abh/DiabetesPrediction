@@ -27,6 +27,9 @@ urlpatterns = [
     path('predict/', views.predict_diabetes, name='predict_diabetes'),
     path('profile/', views.profile, name='profile'),
     path('charts/', views.charts, name='charts'),
-
+    path('recherche-aliment/', views.rechercher_aliment, name='rechercher_aliment'),
+    path('ajouter-consommation/', views.ajouter_consommation, name='ajouter_consommation'),
+    path('suivi-calories/', views.suivi_calories, name='suivi_calories'),
+    path('graphe-calories/', views.graphe_calories, name='graphe_calories'),
 
 ]

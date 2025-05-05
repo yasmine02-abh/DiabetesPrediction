@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/heart-pulse-blue500.svg' %}">
     <title>Dashboard</title>
 
     <!-- Tailwind CSS -->
@@ -83,6 +84,11 @@
                     <i class="fas fa-users"></i> <span>Predict</span>
                 </a>
             </li>
+            <li class="mt-8">
+                <a href="/ajouter-consommation" class="flex items-center space-x-3 text-gray-600 hover:text-yellow-500 hover:bg-yellow-100 p-3 rounded-lg">
+                    <i class="bi bi-egg-fried"></i> <span>Track Calories</span>
+                </a>
+            </li>
             <li>
                 <a href="" class="flex items-center space-x-3 text-gray-600 hover:text-blue-500 hover:bg-blue-100 p-3 rounded-lg">
                     <i class="fas fa-file-alt"></i> <span>Advices</span>
@@ -98,11 +104,7 @@
                     <i class="fa fa-user"></i> <span>Profile</span>
                 </a>
             </li>
-            <li class="mt-8">
-                <a href="" class="flex items-center space-x-3 text-gray-600 hover:text-red-500 hover:bg-red-100 p-3 rounded-lg">
-                    <i class="fas fa-sign-out-alt"></i> <span>Sign Out</span>
-                </a>
-            </li>
+           
         </ul>
     </aside>
 
