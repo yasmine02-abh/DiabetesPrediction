@@ -31,5 +31,7 @@ urlpatterns = [
     path('ajouter-consommation/', views.ajouter_consommation, name='ajouter_consommation'),
     path('suivi-calories/', views.suivi_calories, name='suivi_calories'),
     path('graphe-calories/', views.graphe_calories, name='graphe_calories'),
+    path('advices/', views.advices_view, name='advices'),
+    path('recettes/', views.recettes_view, name='recettes'),
 
 ]

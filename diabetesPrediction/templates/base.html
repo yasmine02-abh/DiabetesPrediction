@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="{% static 'images/heart-pulse-blue500.svg' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/doc.png' %}">
     <title>Dashboard</title>
 
     <!-- Tailwind CSS -->
@@ -72,7 +72,7 @@
     </nav>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed top-16 left-0 w-72 h-[calc(100vh-4rem)] bg-white shadow-lg transition-all duration-300 z-40">
+    <aside id="sidebar" class="fixed top-16 left-0 w-72 h-screen bg-white shadow-lg transition-all duration-300 z-40">
         <ul class="p-4 space-y-4">
             <li>
                 <a href="/dashboard" class="flex items-center space-x-3 text-gray-600 hover:text-blue-500 hover:bg-blue-100 p-3 rounded-lg">
@@ -90,7 +90,7 @@
                 </a>
             </li>
             <li>
-                <a href="" class="flex items-center space-x-3 text-gray-600 hover:text-blue-500 hover:bg-blue-100 p-3 rounded-lg">
+                <a href="/advices" class="flex items-center space-x-3 text-gray-600 hover:text-blue-500 hover:bg-blue-100 p-3 rounded-lg">
                     <i class="fas fa-file-alt"></i> <span>Advices</span>
                 </a>
             </li>

@@ -166,7 +166,7 @@ model = joblib.load(MODEL_PATH)
 scaler = joblib.load(SCALER_PATH)
 
 
-@login_required
+
 def predict_diabetes(request):
     result = None
     utilisateur_id = request.session.get('utilisateur_id')  # Get the logged-in user ID from the session
@@ -438,3 +438,118 @@ def graphe_calories(request):
         'calories': calories
     }
     return render(request, 'graphe_calories.html', context)
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
+
+def advices_view(request):
+    try:
+        utilisateur_id = request.session.get('utilisateur_id')
+        
+        if not utilisateur_id:
+            return redirect('login')  # Si l'ID de l'utilisateur est introuvable, rediriger vers le login
+
+        utilisateur = Utilisateur.objects.get(id=utilisateur_id)
+        
+        # Récupérer la dernière entrée de DonneeSante pour l'utilisateur
+        try:
+            last_data = DonneeSante.objects.filter(utilisateur=utilisateur).latest('date_prediction')
+        except DonneeSante.DoesNotExist:
+            message = "No health data found. Please update your health data first."
+            return render(request, 'advices.html', {'message': message})
+        
+        # Obtenir toutes les recommandations associées à cette donnée de santé
+       # recommandations = Recommendation.objects.filter(donnee=last_data)
+        
+        # Message personnalisé
+        if last_data.result:
+            if last_data.result == "You have diabetes":
+                message = "It seems you are diagnosed with diabetes. Here are some personalized recommendations for you!"
+            else:
+                message = "Bonne nouvelle ! Vous n'êtes pas à risque selon notre prédiction."
+        else:
+            message = "Health data is incomplete. Please update your information."
+        
+        # Passer les données au template
+        context = {
+            'message': message,
+            #'recommandations': recommandations,
+            'user': utilisateur,
+            'last_data': last_data
+        }
+        return render(request, 'advices.html', context)
+    
+    except Utilisateur.DoesNotExist:
+        # Si l'utilisateur n'existe pas, rediriger vers la page de connexion
+        return redirect('login')
+
+import requests
+from django.shortcuts import render, redirect
+from .models import DonneeSante, Utilisateur
+
+def get_recipes_from_spoonacular(query="healthy", number=6):
+    api_key = "f3fb07c5b6974a59a924321a01205260"  # 🔁 Remplace par ta vraie clé API
+    url = "https://api.spoonacular.com/recipes/complexSearch"
+    
+    params = {
+        "apiKey": api_key,
+        "query": query,
+        "number": number,
+        "addRecipeInformation": True
+    }
+
+    response = requests.get(url, params=params)
+  
+    data = response.json()
+    print("Raw API response:", data)
+    
+    results = []
+    for item in data.get("results", []):
+        results.append({
+            "title": item["title"],
+            "summary": item["summary"],
+            "url": item["sourceUrl"],
+            "image": item["image"]
+        })
+    
+    return results
+
+def recettes_view(request):
+    try:
+        utilisateur_id = request.session.get('utilisateur_id')
+        
+        if not utilisateur_id:
+            return redirect('login')  # Utilisateur non connecté
+
+        utilisateur = Utilisateur.objects.get(id=utilisateur_id)
+
+        # Récupérer la dernière donnée de santé
+        try:
+            last_data = DonneeSante.objects.filter(utilisateur=utilisateur).latest('date_prediction')
+        except DonneeSante.DoesNotExist:
+            message = "Aucune donnée de santé trouvée. Veuillez les renseigner d'abord."
+            return render(request, 'recettes.html', {'message': message})
+
+        # Choix du type de recette selon les données santé
+        if last_data.bmi > 30:
+            recipes = get_recipes_from_spoonacular("healthy salad")
+            
+        elif last_data.hba1c_level > 6.5:
+            recipes = get_recipes_from_spoonacular("no sugar meals")
+           
+        else:
+            recipes = get_recipes_from_spoonacular("healthy high protein meals ")
+            
+
+        context = {
+            'recipes': recipes,
+            'last_data': last_data,
+            'user': utilisateur
+        }
+
+        return render(request, 'recettes.html', context)
+
+    except Utilisateur.DoesNotExist:
+        return redirect('login')
+

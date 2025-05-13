@@ -1,0 +1,292 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recettes personnalisées</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #3b82f6;
+      --light-blue: #60a5fa;
+      --lighter-blue: #dbeafe;
+      --background: #f8fafc;
+      --card-bg: #ffffff;
+      --text-dark: #1e293b;
+      --text-medium: #475569;
+      --text-light: #64748b;
+      --border-radius: 16px;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    
+    body {
+  font-family: 'Outfit', sans-serif;
+  background: url("{% static 'images/bg-recipes.png' %}") no-repeat center top;
+  background-size: cover;
+  background-attachment: fixed;
+  color: var(--text-dark);
+  line-height: 1.6;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      color: var(--text-medium);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    
+    .recipes-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ⬅️ This centers the cards */
+  gap: 30px; /* Nice spacing between cards */
+}
+
+    .recipe-card-wrapper {
+  width: 100%;
+  max-width: 500px; /* ⬅️ Max width for a centered, neat card */
+  padding: 0;
+}
+    .recipe-card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      height: 550px; /* Fixed height for all cards */
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .recipe-image-container {
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      height: 220px; /* Fixed height for image container */
+    }
+
+    .recipe-image {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      
+    }
+
+    .recipe-content {
+      padding: 0 1.5rem 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .recipe-badge {
+      display: inline-block;
+      background-color: var(--lighter-blue);
+      color: var(--primary-blue);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      margin-bottom: 0.75rem;
+      max-width: 1 ;
+    }
+
+    .recipe-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+      /* Cross-browser text truncation */
+      max-height: 3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      line-clamp: 2;
+    }
+
+    .recipe-summary {
+      color: var(--text-medium);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+      /* Cross-browser text truncation */
+      max-height: 4.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      line-clamp: 5;
+    }
+
+    .recipe-link {
+      display: inline-block;
+      background-color: var(--primary-blue);
+      color: white;
+      font-weight: 500;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      text-align: center;
+      transition: background-color 0.2s ease;
+      border: none;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      margin-top: auto; /* Push button to bottom */
+      align-self: center; /* Center the button */
+    }
+
+    .recipe-link:hover {
+      background-color: #2563eb;
+    }
+
+    /* Floating decorations */
+    .decoration {
+      position: absolute;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    .decoration-1 {
+      top: 10%;
+      left: 5%;
+      transform: rotate(-15deg);
+    }
+
+    .decoration-2 {
+      top: 60%;
+      right: 5%;
+      transform: rotate(20deg);
+    }
+
+    .decoration-3 {
+      bottom: 10%;
+      left: 15%;
+      transform: rotate(10deg);
+    }
+
+    .decoration-4 {
+      top: 30%;
+      right: 15%;
+      transform: rotate(-10deg);
+    }
+
+    /* Message styling */
+    .message {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-top: 30px;
+      color: var(--text-medium);
+      padding: 2rem;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Clear fix for the flexbox layout */
+    .recipes-grid::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .recipe-card-wrapper {
+        width: 100%; /* 1 card per row on mobile */
+      }
+
+      .decoration {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Decorative elements -->
+  <img src="/placeholder.svg?height=80&width=60" alt="" class="decoration decoration-1" aria-hidden="true">
+  <img src="/placeholder.svg?height=70&width=50" alt="" class="decoration decoration-2" aria-hidden="true">
+  <img src="/placeholder.svg?height=60&width=40" alt="" class="decoration decoration-3" aria-hidden="true">
+  <img src="/placeholder.svg?height=90&width=70" alt="" class="decoration decoration-4" aria-hidden="true">
+
+  <div class="container">
+    <header class="header">
+      <h1>Vos Recettes Santé Personnalisées</h1>
+      <p>Des recettes adaptées à vos besoins nutritionnels pour vous aider à maintenir un mode de vie sain</p>
+    </header>
+
+    {% if message %}
+      <p class="message">{{ message }}</p>
+    {% else %}
+      <div class="recipes-grid">
+        {% for r in recipes %}
+          <div class="recipe-card-wrapper">
+            <div class="recipe-card">
+              <div class="recipe-image-container">
+                <img src="{{ r.image }}" alt="{{ r.title }}" class="recipe-image">
+              </div>
+              <div class="recipe-content">
+                <span class="recipe-badge">Recommandé</span>
+                <h2 class="recipe-title">{{ r.title }}</h2>
+                <p class="recipe-summary">{{ r.summary|safe|truncatewords:25 }}</p>
+                <a href="{{ r.url }}" target="_blank" class="recipe-link">Voir la recette complète</a>
+              </div>
+            </div>
+          </div>
+          <br>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
